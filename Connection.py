@@ -1,11 +1,16 @@
 import tweepy
 
-from bottle import route, run
+from bottle import route, run, template
 
-api = None
+#auth = tweepy.OAuthHandler("", "")
+#auth.set_access_token("", "")
+#api = tweepy.API(auth)
+
+#Use the following url to use my (Marc's) details to login with all the keys/tokens and get back my first tweet:
+#localhost:8088/auth/oj8A0mh2hMMLZBAYr9hrsyGXK/vEbApM5duqpSj3fu0oYDmuIMSDlcefk5wToHwmt5DByrqpTR3x/3088841945-9TzefMYW385iw5jsPSo7NeujLn6OigE3ZBC86hu/bve9QIWzyFUlMn4BOVZemcnZ8e3GjhwmuVViz8QhwoRse
 
 @route('/auth/<ckey>/<csecret>/<atoken>/<atokensecret>')
-def authentication():
+def authentication(ckey, csecret, atoken, atokensecret):
  consumer_key = ckey
  consumer_secret = csecret
  access_token = atoken
@@ -15,32 +20,9 @@ def authentication():
  auth.set_access_token(access_token, access_token_secret)
 
  api = tweepy.API(auth)
- mytweets = my_tweets()
- myfirsttweet = my_first_tweet()
- print("Tweet One: {myfirsttweet}")
- print("All Tweets: {mytweets}")
-
-
-def my_tweets():  
  my_tweets = api.user_timeline()
-
- return my_tweets
-
-
-def my_first_tweet():
- my_tweets = api.user_timeline()
-
- return my_tweets[0].text
-
-def my_public_tweets():
- public_tweets = api.home_timeline()
-
- return public_tweets
-
-def my_first_public_tweet():
- public_tweets = api.home_timeline()
-
- return public_tweets[0].text
+ my_first_tweet = my_tweets[0].text
+ return template('My first Tweet was: {{my_first_tweet_here}}', my_first_tweet_here = my_first_tweet)
 
 run(host='localhost', port=8088, debug=True)
 
