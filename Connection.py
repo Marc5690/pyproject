@@ -2,25 +2,43 @@ import tweepy
 
 from bottle import route, run
 
-@route('/hello')
-def hello():
- consumer_key = "your consumer key here"
- consumer_secret = "your consumer secret here"
- access_token = "your access token here"
- access_token_secret = "your access token secret here"
+api = None
+
+@route('/auth/<ckey>/<csecret>/<atoken>/<atokensecret>')
+def authentication():
+ consumer_key = ckey
+ consumer_secret = csecret
+ access_token = atoken
+ access_token_secret = atokensecret
 
  auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
  auth.set_access_token(access_token, access_token_secret)
 
  api = tweepy.API(auth)
+ mytweets = my_tweets()
+ myfirsttweet = my_first_tweet()
+ print("Tweet One: {myfirsttweet}")
+ print("All Tweets: {mytweets}")
 
- public_tweets = api.home_timeline()
+
+def my_tweets():  
  my_tweets = api.user_timeline()
- #for tweet in my_tweets:
- #    print(tweet.text)
 
- #for tweet in public_tweets:
- #    print(tweet.text)
+ return my_tweets
+
+
+def my_first_tweet():
+ my_tweets = api.user_timeline()
+
+ return my_tweets[0].text
+
+def my_public_tweets():
+ public_tweets = api.home_timeline()
+
+ return public_tweets
+
+def my_first_public_tweet():
+ public_tweets = api.home_timeline()
 
  return public_tweets[0].text
 
